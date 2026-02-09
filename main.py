@@ -20,3 +20,4 @@ class RealTimeLogAggregator:
         self.result_queue = asyncio.Queue()
         self.num_soruces = num_sources
         self.num_workers = num_workers
+        self.statistics = defaultdict(int)
