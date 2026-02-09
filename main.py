@@ -1,13 +1,22 @@
 import asyncio
+import random
+import time
+from collections import defaultdict
+from dataclasses import dataclass
+from typing import Dict, List
+import json
 
-urls = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
-task_q = asyncio.Queue()
-result_q = asyncio.Queue()
-
-async def worker(q: asyncio.Queue):
-    url = q.get_nowait()
-    asyncio.sleep(3)
-    result_q.put_nowait(url)
-
-[asyncio.create_task(worker(task_q)) for _ in range(5)]
+@dataclass
+class LogEntry:
+    level: str
+    message: str
+    source: str
+    timestamp: float
+    
+class RealTimeLogAggregator:
+    def __init__(self, num_sources: int = 5, num_workers: int = 3, max_queue_size: int = 1000):
+        self.input_queue = asyncio.Queue(maxsize=max_queue_size)
+        self.result_queue = asyncio.Queue()
+        self.num_soruces = num_sources
+        self.num_workers = num_workers
